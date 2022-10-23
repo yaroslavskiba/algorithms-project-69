@@ -1,4 +1,5 @@
 // @ts-check
 
-import search from './src/search.js';
+import buildSearchEngine from './src/buildSearchEngine.js';
 
+export default buildSearchEngine;

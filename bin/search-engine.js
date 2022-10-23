@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 
-import search from '../index.js';
+import SearchEngine from '../index.js';
 
+SearchEngine();
