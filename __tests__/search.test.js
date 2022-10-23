@@ -13,10 +13,7 @@ test('search engine remembered documents', () => {
 });
 
 test('search by documents', () => {
-  expect(searchEngine.search('shoot')).toStrictEqual([{
-    id: 'doc1',
-    text: "I can't shoot straight unless I've had a pint!",
-  }, { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." }]);
+  expect(searchEngine.search('shoot')).toStrictEqual([doc1, doc2]);
 });
 
 test('documents are empty', () => {
