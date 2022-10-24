@@ -19,3 +19,16 @@ test('search by documents', () => {
 test('documents are empty', () => {
   expect(searchEngine.search('')).toStrictEqual([]);
 });
+
+const doc1 = [{ id: 'doc1', text: "I can't shoot straight unless I've had a pint!" }];
+const docs = [doc1];
+
+const searchEngine = buildSearchEngine(docs);
+
+test('without !', () => {
+  expect(searchEngine.search('pint')).toStrictEqual([doc1]);
+});
+
+test('with !', () => {
+  expect(searchEngine.search('pint!')).toStrictEqual([doc1]);
+});
