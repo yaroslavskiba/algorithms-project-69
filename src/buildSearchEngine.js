@@ -1,8 +1,10 @@
 export default (docs) => ({
   docs,
   search: (str) => {
-    const empty = str.replace(/\W+/);
-    const newReg = new RegExp('\\b' + empty + '\\b', 'i');
-    return docs.filter(cur => docs[text].match(newReg));
+    if (!str) {
+      return [];
+    }
+    const empty = str.replace(/\W/g, '');
+    return docs.filter((cur) => new RegExp(`\\b${empty}\\b`, 'i').test(cur.text));
   },
 });
