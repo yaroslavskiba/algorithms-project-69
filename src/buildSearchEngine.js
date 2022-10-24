@@ -8,3 +8,7 @@ export default (docs) => ({
     return docs.filter((cur) => new RegExp(`\\b${empty}\\b`, 'i').test(cur.text));
   },
 });
+
+// const empty = str.replace(/\W/g, '');
+// const searchReg = new RegExp(`\\b${empty}\\b`, 'i');
+// return docs.filter((cur) => cur.text.match(searchReg));
