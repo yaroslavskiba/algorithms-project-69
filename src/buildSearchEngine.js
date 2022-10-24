@@ -4,11 +4,11 @@ export default (docs) => ({
     if (!str) {
       return [];
     }
-    const empty = str.replace(/\W/g, '');
-    return docs.filter((cur) => new RegExp(`\\b${empty}\\b`, 'i').test(cur.text));
+    const emptyToken = str.replace(/\W/g, '');
+    const searchReg = new RegExp(`\\b${emptyToken}\\b`, 'gi');
+    return docs.map((doc) => ({
+      ...doc,
+      score: doc.text.match(searchReg)?.length ?? 0,
+    })).filter((doc) => doc.score).sort((left, right) => right.score - left.score);
   },
 });
-
-// const empty = str.replace(/\W/g, '');
-// const searchReg = new RegExp(`\\b${empty}\\b`, 'i');
-// return docs.filter((cur) => cur.text.match(searchReg));
