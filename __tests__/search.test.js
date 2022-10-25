@@ -8,7 +8,7 @@ describe('search', () => {
   const docs = [doc1, doc2, doc3];
 
   beforeEach(async () => {
-    searchEngine = buildSearchEngine(docs);
+    const searchEngine = buildSearchEngine(docs);
   });
 
   test('search engine remembered documents', () => {
