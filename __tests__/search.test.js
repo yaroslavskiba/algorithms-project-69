@@ -7,7 +7,9 @@ describe('search', () => {
   const doc3 = { id: 'doc3', text: "I'm your shooter." };
   const docs = [doc1, doc2, doc3];
 
-  const searchEngine = buildSearchEngine(docs);
+  beforeEach(async () => {
+    searchEngine = buildSearchEngine(docs);
+  });
 
   test('search engine remembered documents', () => {
     // eslint-disable-next-line jest/valid-expect
@@ -25,5 +27,9 @@ describe('search', () => {
   test('search regardless of punctuation marks', () => {
     expect(searchEngine.search('pint')).toMatchObject([doc1]);
     expect(searchEngine.search('pint!')).toMatchObject([doc1]);
+  });
+
+  test('search by multiple occurrences', () => {
+    expect(searchEngine.search('shoot at me')).toMatchObject([doc2, doc1]);
   });
 });
