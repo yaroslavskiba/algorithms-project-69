@@ -15,7 +15,7 @@ describe('search', () => {
   });
 
   test('search by documents', () => {
-    expect(searchEngine.search('shoot')).toMatchObject([doc2, doc1]);
+    expect(searchEngine.search('shoot')).toMatchObject(['doc2', 'doc1']);
   });
 
   test('documents are empty', () => {
@@ -23,11 +23,11 @@ describe('search', () => {
   });
 
   test('search regardless of punctuation marks', () => {
-    expect(searchEngine.search('pint')).toMatchObject([doc1]);
-    expect(searchEngine.search('pint!')).toMatchObject([doc1]);
+    expect(searchEngine.search('pint')).toMatchObject(['doc1']);
+    expect(searchEngine.search('pint!')).toMatchObject(['doc1']);
   });
 
   test('search by multiple occurrences', () => {
-    expect(searchEngine.search('shoot at me')).toMatchObject([doc2, doc1]);
+    expect(searchEngine.search('shoot at me')).toMatchObject(['doc2', 'doc1']);
   });
 });
