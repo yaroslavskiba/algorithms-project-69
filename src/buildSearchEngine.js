@@ -4,7 +4,7 @@ export default (docs) => ({
     if (!str) {
       return [];
     }
-    const searchReg = str.split(' ').map(cur => {
+    const searchReg = str.split(' ').map((cur) => {
       const cleanToken = cur.replace(/\W/g, '');
       return new RegExp(`\\b${cleanToken}\\b`, 'gi');
     });
