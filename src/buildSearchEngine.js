@@ -8,13 +8,15 @@ export default (docs) => ({
       const cleanToken = cur.replace(/\W/g, '');
       return new RegExp(`\\b${cleanToken}\\b`, 'gi');
     });
-    const sortPrepare =  docs.map((doc) => ({
+    const sortPrepare = docs.map((doc) => ({
       ...doc,
       score: searchReg.reduce((acc, word) => acc + (doc.text.match(word)?.length ?? 0), 0),
       count: searchReg.reduce((acc, word) => acc + (word.test(doc.text) ? 1 : 0), 0),
     }));
-    return sortPrepare.filter((doc) => doc.score || doc.count).sort((left, right) => right.count - left.count || right.score - left.score,
-  );
+    return sortPrepare.filter((doc) => doc.score 
+      || doc.count).sort((left, right) => right.count - left.count 
+      || right.score - left.score,
+    );
   },
 });
 
@@ -33,8 +35,10 @@ export default (docs) => ({
 //       score: searchReg.reduce((acc, word) => acc + (doc.text.match(word)?.length ?? 0), 0),
 //       count: searchReg.reduce((acc, word) => acc + (word.test(doc.text) ? 1 : 0), 0),
 //     }));
-//     return sortPrepare.filter((doc) => doc.score || doc.count).sort((left, right) => right.count - left.count || right.score - left.score,
-//   );
+//     return sortPrepare.filter((doc) => doc.score 
+//      || doc.count).sort((left, right) => right.count - left.count 
+//      || right.score - left.score,
+//     );
 //   },
 // });
 
