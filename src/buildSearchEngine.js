@@ -5,7 +5,24 @@ const cleanToken = (word) => {
   const clear = word.match(/\w+/g)[0];
   return new RegExp(`\\b${clear}\\b`, 'gi');
 };
+
+const getText = (txt) => txt.split(' ').map((item) => item.match(/\w+/g)[0]);
+
 const getWords = (txt) => txt.split(' ').map((item) => cleanToken(item));
+
+const getIndex = (docs) => docs
+  .reduce((cur, doc) => {
+    const { id, text } = doc;
+    const words = getText(text);
+    return words.reduce((acc, word) => {
+      if (!acc[word]) {
+        return { ...acc, [word]: { [id]: 1 } };
+      }
+      const current = acc[word][id] ?? 0;
+      const count = current + 1;
+      return { ...acc, [word]: { ...acc[word], [id]: count } };
+    }, cur);
+  }, {});
 
 const buildSearchEngine = (docs) => ({
   docs,
@@ -26,6 +43,7 @@ const buildSearchEngine = (docs) => ({
       || count.counts).sort((left, right) => right.counts - left.counts
       || right.score - left.score);
     const result = filteredCounters.map((doc) => doc.id);
+    console.log(getIndex(docs));
     return result;
   },
 });
