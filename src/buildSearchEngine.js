@@ -4,11 +4,14 @@ export default (docs) => ({
     if (!str) {
       return [];
     }
-    const emptyToken = str.replace(/\W/g, '');
-    const searchReg = new RegExp(`\\b${emptyToken}\\b`, 'gi');
+    const searchReg = str.split(' ').map(cur => {
+      const cleanToken = cur.replace(/\W/g, '');
+      return new RegExp(`\\b${cleanToken}\\b`, 'gi');
+    });
     return docs.map((doc) => ({
       ...doc,
-      score: doc.text.match(searchReg)?.length ?? 0,
+      score: searchReg.reduce((acc, word) => acc + (doc.text.match(word)?.length ?? 0), 0),
+      count: searchReg.reduce((acc, word) => acc + (word.test(doc.text) ? 1 : 0), 0),
     })).filter((doc) => doc.score).sort((left, right) => right.score - left.score);
   },
 });
