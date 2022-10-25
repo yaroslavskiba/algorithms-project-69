@@ -7,9 +7,7 @@ describe('search', () => {
   const doc3 = { id: 'doc3', text: "I'm your shooter." };
   const docs = [doc1, doc2, doc3];
 
-  beforeEach(async () => {
-    const searchEngine = buildSearchEngine(docs);
-  });
+  const searchEngine = buildSearchEngine(docs);
 
   test('search engine remembered documents', () => {
     // eslint-disable-next-line jest/valid-expect
