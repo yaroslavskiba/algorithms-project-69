@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const wordRegexp = /[\w'-]+/gi;
+const wordRegexp = /\w+/g;
 const cleanToken = (word) => {
   const matches = word.match(wordRegexp);
   if (matches) {
