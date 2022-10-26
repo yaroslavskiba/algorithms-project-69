@@ -3,14 +3,16 @@ import _ from 'lodash';
 const wordRegexp = /[\w'-]+/gi;
 const cleanToken = (word) => {
   const matches = word.match(wordRegexp);
-  return matches[0].toLowerCase();
+  if (matches) {
+    return matches[0].toLowerCase();
+  }
+  return '';
 };
 
-const getWords = (txt) => txt.split(' ').map((item) => cleanToken(item))
-  .filter((cur) => cur);
-const counter = (arr, word) => arr.reduce((acc, item) => (item === word ? acc + 1 : acc), 0);
+const getTokens = (text) => text.split(' ').map((item) => cleanToken(item)).filter((item) => item);
+const getDocsTokens = (docs) => docs.map(({ id, text }) => ({ id, tokens: getTokens(text) }));
+const counter = (arr, term) => arr.reduce((acc, item) => (item === term ? acc + 1 : acc), 0);
 
-const getDocsTokens = (docs) => docs.map(({ id, text }) => ({ id, tokens: getWords(text) }));
 const getTokensArr = (docsTokens) => {
   const allTokens = _.uniq(docsTokens.reduce((acc, { tokens }) => acc.concat(tokens), []));
   return allTokens;
@@ -51,27 +53,59 @@ const getTf = (invertIndex, docsTokens) => {
   return index;
 };
 
-const getIndex = (tf, idf) => { };
+const getIndex = (tf, idf) => {
+  const tfTokensArr = Object.entries(tf);
+  const index = tfTokensArr.reduce((cur, [token, tfObj]) => {
+    const tfEntries = Object.entries(tfObj);
+    const tfIdf = tfEntries.reduce((acc, [idDoc, tfValue]) => {
+      const tfIdfValue = _.round(tfValue * idf[token], 3);
+      return { ...acc, [idDoc]: tfIdfValue };
+    }, {});
+    return { ...cur, [token]: tfIdf };
+  }, {});
+  return index;
+};
 
+const getWordTfIdf = (strIndex) => {
+  const values = Object.values(strIndex);
+  const docsRels = values.reduce((acc, obj) => {
+    const entries = Object.entries(obj);
+    const newAcc = entries.reduce((acc2, [docId, coef]) => {
+      const prev = acc2[docId] ?? 0;
+      const current = _.round(prev + coef, 3);
+      return { ...acc2, [docId]: current };
+    }, acc);
+    return newAcc;
+  }, {});
+  return docsRels;
+};
+
+const getsortList = (wordTfIdf) => {
+  const entries = Object.entries(wordTfIdf);
+  const sortedEntries = entries.sort((a, b) => b[1] - a[1]);
+  const sortedList = sortedEntries.map(([docId]) => docId);
+  return sortedList;
+};
 
 const buildSearchEngine = (docs) => {
-  const docsTokens = getDocsTokens(docs);// делим текст на слова(токены) +
-  const tokensArr = getTokensArr(docsTokens);// получаем уникальные значения всех токенов
-  // из всех документов +
-  const sizeDocs = docs.length;// количество документов +
-  const invertIndex = getInvertIndex(tokensArr, docsTokens);// в каких документах встречается токен
-  const idf = getIdf(invertIndex, sizeDocs);// вычисление idf для каждого слова во всех документах
-  const tf = getTf(invertIndex, docsTokens);// вычисление tf для каждого слова в
-  // каждом документе где оно имеется
-  const index = getIndex(tf, idf);// подсчет индекса tf-idf
+  console.log(docs);
+  const docsTokens = getDocsTokens(docs);
+  const tokensArr = getTokensArr(docsTokens);
+  const sizeDocs = docs.length;
+  const invertIndex = getInvertIndex(tokensArr, docsTokens);
+  const idf = getIdf(invertIndex, sizeDocs);
+  const tf = getTf(invertIndex, docsTokens);
+  const index = getIndex(tf, idf);
 
   return {
     index,
     search(str) {
-      return ;
+      const strTokens = getTokens(str);
+      const strIndex = _.pick(this.index, strTokens);
+      const wordTfIdf = getWordTfIdf(strIndex);
+      const sortList = getsortList(wordTfIdf);
+      return sortList;
     },
-
   };
 };
-
 export default buildSearchEngine;
