@@ -3,20 +3,19 @@ import _ from 'lodash';
 const wordRegexp = /[\w'-]+/gi;
 const cleanToken = (word) => {
   const matches = word.match(wordRegexp);
-  if (matches) {
-    return matches[0].toLowerCase();
-  }
-  return '';
+  return matches[0].toLowerCase();
 };
 
 const getWords = (txt) => txt.split(' ').map((item) => cleanToken(item))
-  .filter((cur) => cur); // строка поиска
+  .filter((cur) => cur);
+const counter = (arr, word) => arr.reduce((acc, item) => (item === word ? acc + 1 : acc), 0);
 
 const getDocsTokens = (docs) => docs.map(({ id, text }) => ({ id, tokens: getWords(text) }));
 const getTokensArr = (docsTokens) => {
   const allTokens = _.uniq(docsTokens.reduce((acc, { tokens }) => acc.concat(tokens), []));
   return allTokens;
 };
+
 const getInvertIndex = (tokensArr, docsTokens) => {
   const index = tokensArr.reduce((acc, token) => {
     const docsList = docsTokens.reduce((accInner, { id, tokens }) => {
@@ -29,10 +28,29 @@ const getInvertIndex = (tokensArr, docsTokens) => {
   }, {});
   return index;
 };
+
 const getIdf = (invertIndex, sizeDocs) => {
-  
+  const idTokensArr = Object.entries(invertIndex);
+  const idf = idTokensArr.reduce((acc, [key, value]) => {
+    const numIdf = Math.log(1 + sizeDocs / value.length);
+    return { ...acc, [key]: numIdf };
+  }, {});
+  return idf;
 };
-const getTf = (invertIndex, docsTokens) => { };
+const getTf = (invertIndex, docsTokens) => {
+  const idTokensArr = Object.entries(invertIndex);
+  const index = idTokensArr.reduce((cur, [token, value]) => {
+    const tf = value.reduce((acc, idDoc) => {
+      const { tokens } = docsTokens.find((item) => item.id === idDoc);
+      const count = counter(tokens, token);
+      const numTf = count / tokens.length;
+      return { ...acc, [idDoc]: numTf };
+    }, {});
+    return { ...cur, [token]: tf };
+  }, {});
+  return index;
+};
+
 const getIndex = (tf, idf) => { };
 
 
