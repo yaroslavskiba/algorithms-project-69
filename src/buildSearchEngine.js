@@ -1,51 +1,21 @@
-// eslint-disable-next-line no-unused-vars
-import _ from 'lodash';
+const getDocsTokens = (docs) => { };
+const getTokensArr = (docsTokens) => { };
+const getInvertIndex = (tokensArr, docsTokens) => { };
+const getIdf = (invertIndex, sizeDocs) => { };
+const getTf = (invertIndex, docsTokens) => { };
+const getIndex = (tf, idf) => { };
 
-const cleanToken = (word) => {
-  const clear = word.match(/\w+/g)[0];
-  return new RegExp(`\\b${clear}\\b`, 'gi');
+
+const buildSearchEngine = (docs) => {
+  const sizeDocs = docs.length;// количество документов
+  const docsTokens = getDocsTokens(docs);// делим текст на слова(токены)
+  const tokensArr = getTokensArr(docsTokens);// получаем уникальные значения всех токенов
+  // из всех документов
+  const invertIndex = getInvertIndex(tokensArr, docsTokens);// в каких документах встречается токен
+  const idf = getIdf(invertIndex, sizeDocs);// вычисление idf для каждого слова во всех документах
+  const tf = getTf(invertIndex, docsTokens);// вычисление tf для каждого слова в
+  // каждом документе где оно имеется
+  const index = getIndex(tf, idf);// подсчет индекса tf-idf
 };
-
-const getText = (txt) => txt.split(' ').map((item) => item.match(/\w+/g)[0]);
-
-const getWords = (txt) => txt.split(' ').map((item) => cleanToken(item));
-
-const getIndex = (docs) => docs
-  .reduce((cur, doc) => {
-    const { id, text } = doc;
-    const words = getText(text);
-    return words.reduce((acc, word) => {
-      if (!acc[word]) {
-        return { ...acc, [word]: { [id]: 1 } };
-      }
-      const current = acc[word][id] ?? 0;
-      const count = current + 1;
-      return { ...acc, [word]: { ...acc[word], [id]: count } };
-    }, cur);
-  }, {});
-
-const buildSearchEngine = (docs) => ({
-  docs,
-  search(str) {
-    if (!str) {
-      return [];
-    }
-    const strWords = getWords(str);
-    const counters = this.docs.map((doc) => {
-      const { id, text } = doc;
-      const counts = strWords
-        .reduce((acc, word) => acc + (text.match(word)?.length ?? 0), 0);
-      const score = strWords
-        .reduce((acc, word) => acc + (word.test(text) ? 1 : 0), 0);
-      return { id, counts, score };
-    });
-    const filteredCounters = counters.filter((count) => count.score
-      || count.counts).sort((left, right) => right.counts - left.counts
-      || right.score - left.score);
-    const result = filteredCounters.map((doc) => doc.id);
-    console.log(getIndex(docs));
-    return result;
-  },
-});
 
 export default buildSearchEngine;
