@@ -34,7 +34,7 @@ const getInvertIndex = (tokensArr, docsTokens) => {
 const getIdf = (invertIndex, sizeDocs) => {
   const idTokensArr = Object.entries(invertIndex);
   const idf = idTokensArr.reduce((acc, [key, value]) => {
-    const numIdf = Math.log(1 + sizeDocs / value.length);
+    const numIdf = _.round(Math.log(1 + sizeDocs / value.length), 3);
     return { ...acc, [key]: numIdf };
   }, {});
   return idf;
@@ -45,7 +45,7 @@ const getTf = (invertIndex, docsTokens) => {
     const tf = value.reduce((acc, idDoc) => {
       const { tokens } = docsTokens.find((item) => item.id === idDoc);
       const count = counter(tokens, token);
-      const numTf = count / tokens.length;
+      const numTf = _.round(count / tokens.length, 3);
       return { ...acc, [idDoc]: numTf };
     }, {});
     return { ...cur, [token]: tf };
