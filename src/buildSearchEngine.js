@@ -2,8 +2,11 @@ import _ from 'lodash';
 
 const wordRegexp = /[\w'-]+/gi;
 const cleanToken = (word) => {
-  const clear = word.match(wordRegexp);
-  return new RegExp(`\\b${clear}\\b`, 'gi');
+  const matches = word.match(wordRegexp);
+  if (matches) {
+    return matches[0].toLowerCase();
+  }
+  return '';
 };
 
 const getWords = (txt) => txt.split(' ').map((item) => cleanToken(item))
@@ -14,8 +17,21 @@ const getTokensArr = (docsTokens) => {
   const allTokens = _.uniq(docsTokens.reduce((acc, { tokens }) => acc.concat(tokens), []));
   return allTokens;
 };
-const getInvertIndex = (tokensArr, docsTokens) => { };
-const getIdf = (invertIndex, sizeDocs) => { };
+const getInvertIndex = (tokensArr, docsTokens) => {
+  const index = tokensArr.reduce((acc, token) => {
+    const docsList = docsTokens.reduce((accInner, { id, tokens }) => {
+      if (tokens.includes(token)) {
+        return [...accInner, id];
+      }
+      return accInner;
+    }, []);
+    return { ...acc, [token]: docsList };
+  }, {});
+  return index;
+};
+const getIdf = (invertIndex, sizeDocs) => {
+  
+};
 const getTf = (invertIndex, docsTokens) => { };
 const getIndex = (tf, idf) => { };
 
@@ -34,10 +50,6 @@ const buildSearchEngine = (docs) => {
   return {
     index,
     search(str) {
-      if (!str) {
-        return [];
-      }
-
       return ;
     },
 
