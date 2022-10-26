@@ -4,9 +4,6 @@
   "type": "module",
   "description": "[![Actions Status](https://github.com/yaroslavskiba/algorithms-project-69/workflows/hexlet-check/badge.svg)](https://github.com/yaroslavskiba/algorithms-project-69/actions)",
   "main": "index.js",
-  "bin": {
-    "search": "bin/search-engine.js"
-  },
   "simple-git-hooks": {
     "pre-push": "make lint"
   },
