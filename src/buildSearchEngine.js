@@ -32,16 +32,16 @@ const getInvertIndex = (tokensArr, docsTokens) => {
 };
 
 const getIdf = (invertIndex, sizeDocs) => {
-  const idTokensArr = Object.entries(invertIndex);
-  const idf = idTokensArr.reduce((acc, [key, value]) => {
+  const entries = Object.entries(invertIndex);
+  const idf = entries.reduce((acc, [key, value]) => {
     const numIdf = _.round(Math.log(1 + sizeDocs / value.length), 3);
     return { ...acc, [key]: numIdf };
   }, {});
   return idf;
 };
 const getTf = (invertIndex, docsTokens) => {
-  const idTokensArr = Object.entries(invertIndex);
-  const index = idTokensArr.reduce((cur, [token, value]) => {
+  const entries = Object.entries(invertIndex);
+  const index = entries.reduce((cur, [token, value]) => {
     const tf = value.reduce((acc, idDoc) => {
       const { tokens } = docsTokens.find((item) => item.id === idDoc);
       const count = counter(tokens, token);
@@ -54,8 +54,8 @@ const getTf = (invertIndex, docsTokens) => {
 };
 
 const getIndex = (tf, idf) => {
-  const tfTokensArr = Object.entries(tf);
-  const index = tfTokensArr.reduce((cur, [token, tfObj]) => {
+  const entries = Object.entries(tf);
+  const index = entries.reduce((cur, [token, tfObj]) => {
     const tfEntries = Object.entries(tfObj);
     const tfIdf = tfEntries.reduce((acc, [idDoc, tfValue]) => {
       const tfIdfValue = _.round(tfValue * idf[token], 3);
